@@ -1,2 +1,2 @@
 # Mfilter
-Agrega filtros/busquedas, ordenamiento y páginado a modelos de Eloquent
+Permite agregar todos las dependencias y archivos de uso común en proyectos de BpB
