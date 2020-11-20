@@ -1,6 +1,8 @@
 <?php
 namespace Nemutagk\BpBInsumos\Middleware;
 
+use Nemutagk\BpBInsumos\Support\Auth;
+
 class AuthMiddleware
 {
 	public function handle($request, Closure $next, $app, $permission) {
