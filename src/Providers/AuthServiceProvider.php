@@ -4,7 +4,7 @@ namespace Nemutagk\BpBInsumos\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-use Nemtuagk\BpbInsumos\Support\Auth;
+use Nemutagk\BpBInsumos\Support\Auth;
 
 class AuthServiceProvider extends ServiceProvider
 {

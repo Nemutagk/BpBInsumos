@@ -3,7 +3,7 @@
 namespace Nemutagk\BpBInsumos\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Service\AccountService;
+use Nemutagk\BpBInsumos\Service\AccountService;
 
 class AccountServiceProvider extends ServiceProvider
 {

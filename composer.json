@@ -13,12 +13,16 @@
         "illuminate/database": ">5.8",
         "illuminate/validation": ">5.8",
         "jenssegers/mongodb": "^3.5|dev-develop",
-        "guzzlehttp/guzzle": "^7.0"
+        "guzzlehttp/guzzle": "^7.0",
+        "fruitcake/laravel-cors": "^2.0"
     },
     "autoload": {
         "psr-4": {
             "Nemutagk\\BpBInsumos\\": "src/"
-        }
+        },
+        "files": [
+            "src/Helper/Functions.php"
+        ]
     },
     "minimum-stability": "dev",
     "prefer-stable": true

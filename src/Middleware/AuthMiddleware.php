@@ -1,7 +1,11 @@
 <?php
 namespace Nemutagk\BpBInsumos\Middleware;
 
+use Log;
+use Closure;
+use AccountService;
 use Nemutagk\BpBInsumos\Support\Auth;
+use Nemutagk\BpBInsumos\Service\HttpException;
 
 class AuthMiddleware
 {
@@ -10,45 +14,31 @@ class AuthMiddleware
 
 		$token = isset($header['authorization']) ? str_replace('Bearer ', '', $header['authorization'][0]) : null;
 
-		if ($token !== null ) {
-			$cliente = new Client();
-			$res = $cliente->post(env('ACCOUNT_API_URL').'auth/validate',[
-				'json'=> [
-					'token' => $token
-					,'aplicacion' => $app
-					,'permiso' => $permission
-				]
-			]);
+		if (empty($token)) {
+			Log::error('Request no tiene token de autorización');
 
-			if ($res->getStatusCode() == 200) {
-				$data = json_decode($res->getBody()->getContents(), true);
-				// Log::info('data: '.print_r($data, true));
-
-				if ($data)  {
-					if ($data['success']) {
-						if ($data['data']) {
-							$request->attributes->add(['auth'=>$data['data']]);
-							(Auth::getInstance())->setAuth($data['data']);
-						}
-
-						$response = $next($request);
-					}else {
-						unset($data['success']);
-						$response = response()->json($data, $data['code']);
-					}
-				}else {
-					Log::error('Error al obtener info de accout: '.print_r($res->getBody()->getContents(), true));
-					$response = response()->json(['message'=>'Acceso no autorizado'], 401);
-				}
-			}else {
-				Log::error('Error en response: '.print_r($res->getBody(), true));
-				$response = response()->json(['message'=>'Acceso no autorizado'], 401);
-			}
-		}else {
-			Log::error('No existe el token!');
-			$response = response()->json(['message'=>'Acceso no autorizado'], 401);
+			return response()->json(['message'=>'Acceso no autorizado'], 401);
 		}
 
-		return $response;
+		try {
+			$response = AccountService::request('post','auth/validate', [
+				'token' => $token
+				,'aplicacion' => $app
+				,'permiso' => $permission
+			]);
+
+			if (!$response['data']['success']) {
+				Log::error('Error al autenticar: ', $response['data']);
+				return response()->json(['message'=>'Acceso no autorizado'], 401);
+			}
+
+			return $next($request);
+		}catch(HttpException $e) {
+			exception_error($e);
+			return response()->json(['message'=>'Acceso no autorizado'], 401);
+		}catch(Exception $e) {
+			exception_error($e);
+			return response()->json(['message'=>'Acceso no autorizado','error'=>$e->getMessage()], 500);
+		}
 	}
 }

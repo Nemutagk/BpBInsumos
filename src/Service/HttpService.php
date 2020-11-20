@@ -40,9 +40,9 @@ class HttpService
 
 			return ['success'=>true,'data'=>json_decode($response->getBody()->getContents(), true), 'rawResponse'=>$response];
 		}catch(ClientException $e) {
-			throw new HttpException($e->getMessage(), json_decode($e->getResponse()->getBody()->getContents(), true));
+			throw new HttpException($e->getMessage(), json_decode($e->getResponse()->getBody()->getContents(), true), $e->getResponse()->getStatusCode());
 		}catch(RequestException $e) {
-			throw new HttpException($e->getMessage(), json_decode($e->getResponse()->getBody()->getContents(), true));
+			throw new HttpException($e->getMessage(), json_decode($e->getResponse()->getBody()->getContents(), true), $e->getResponse()->getStatusCode());
 		}catch(Exception $e) {
 			throw new HttpException($e->getMessage());
 		}
