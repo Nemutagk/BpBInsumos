@@ -13,10 +13,12 @@ class InsumoServiceProvider extends ServiceProvider
 {
 	public function register() {
 		//Registramos otros services providers
-		$this->app->register(MongodbServiceProvider::class);
 		$this->app->register(CorsServiceProvider::class);
+		$this->app->register(MongodbServiceProvider::class);
 		$this->app->register(AuthServiceProvider::class);
 		$this->app->register(AccountServiceProvider::class);
+
+		$this->mergeConfigFrom(__DIR__.'/Config/cors.php', 'cors');
 	}
 
 	public function boot() {

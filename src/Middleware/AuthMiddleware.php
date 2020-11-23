@@ -4,7 +4,7 @@ namespace Nemutagk\BpBInsumos\Middleware;
 use Log;
 use Closure;
 use AccountService;
-use Nemutagk\BpBInsumos\Support\Auth;
+use AuthService;
 use Nemutagk\BpBInsumos\Service\HttpException;
 
 class AuthMiddleware
@@ -33,7 +33,7 @@ class AuthMiddleware
 			}
 
 			if ($response['data']['data'])
-				(Auth::getInstance())->setAuth($response['data']['data']);
+				AuthService::setAuth($response['data']['data']);
 
 			return $next($request);
 		}catch(HttpException $e) {

@@ -55,7 +55,7 @@ trait Mfilter
 		}
 
 
-		return (new CustomQueryBuilder())->apply($query, $data);
+		return (new Filter\CustomQueryBuilder())->apply($query, $data);
 	}
 
 	protected function getWhiteListColumns() {
