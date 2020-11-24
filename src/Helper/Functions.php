@@ -31,6 +31,30 @@ function exception_error($e) {
 	 \Log::error('Error en sistema ('.array_pop($class).'): ',$payload);
 }
 
+function return_exception_error($e, $code=500) {
+	$limitTrace = env('ERROR_TRACE_LIMIT',20);
+	$trace = [];
+
+	for($i=0; $i<$limitTrace; $i++) {
+		$trace[] = $e->getTrace()[$i];
+	}
+
+	$payload = [
+		'success' => false
+		,'error' => $e->getMessage()
+		,'trace' => $trace
+	];
+
+	if (env('APP_ENV') == 'production') {
+		unset($payload['trace']);
+
+		if (strpost(get_class($e), 'sql') !== false)
+			$payload['error'] = 'database error';
+	}
+
+	return response($payload, $code);
+}
+
 function arrayKeyLowerToUpper($arr) {
 	$newArr = [];
 	if (range(0, count($arr)-1) !== $arr) {
