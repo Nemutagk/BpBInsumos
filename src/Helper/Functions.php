@@ -32,6 +32,8 @@ function exception_error($e) {
 }
 
 function return_exception_error($e, $code=500) {
+	Log::info('return_exception_error');
+
 	$limitTrace = env('ERROR_TRACE_LIMIT',20);
 	$trace = [];
 
@@ -41,6 +43,7 @@ function return_exception_error($e, $code=500) {
 
 	$payload = [
 		'success' => false
+		,'message' => 'Error al procesar el request'
 		,'error' => $e->getMessage()
 		,'trace' => $trace
 	];
@@ -48,7 +51,7 @@ function return_exception_error($e, $code=500) {
 	if (env('APP_ENV') == 'production') {
 		unset($payload['trace']);
 
-		if (strpost(get_class($e), 'sql') !== false)
+		if (strpost($payload['error'], 'SQLSTATE') !== false)
 			$payload['error'] = 'database error';
 	}
 
@@ -121,4 +124,18 @@ function arrayReMap($arr, $map) {
 	}
 
 	return $newArr;
+}
+
+function str_rand($length=8, $alpha=true) {
+	if ($alpha)
+		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	else
+		$characters = '0123456789';
+
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
 }

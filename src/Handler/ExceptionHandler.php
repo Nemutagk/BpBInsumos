@@ -7,6 +7,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\{HttpException,NotFoundHttpException,MethodNotAllowedHttpException};
+use Illuminate\Database\QueryException;
 
 class ExceptionHandler
 {
@@ -14,9 +15,8 @@ class ExceptionHandler
 		$response = [
             'success'=>false
             ,'message' => $exception->getMessage()
+            ,'code' => str_rand(8, false)
         ];
-
-        // Log::info('Exception instance: '.get_class($exception));
 
         $code = $exception instanceof NotFoundHttpException || $exception instanceof ModelNotFoundException || $exception instanceof NotFoundHttpException || $exception instanceof MethodNotAllowedHttpException ? 404 : 500;
 
@@ -50,6 +50,9 @@ class ExceptionHandler
 
             if (isset($response['method']))
                 unset($response['method']);
+
+            if ($exception instanceof QueryException)
+                $response['message'] = 'Favor de comunicarse con el administrador, código de error: '.$response['code'];
         }
 
         return response($response, $code);
