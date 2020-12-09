@@ -1,7 +1,4 @@
 <?php
-
-
-
 function getBearerToken($request) {
 	return strpos($request->header('Authorization'), 'Bearer') !== false ? substr($request->header('Authorization'), 7) : $request->header('Authorization');
 }
@@ -138,4 +135,12 @@ function str_rand($length=8, $alpha=true) {
         $randomString .= $characters[rand(0, $charactersLength - 1)];
     }
     return $randomString;
+}
+
+function startProcess() {
+	return now();
+}
+
+function endProcess(\Carbon\Carbon $start) {
+	return $start->diffInSeconds(now());
 }

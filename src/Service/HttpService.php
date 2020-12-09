@@ -4,7 +4,7 @@ namespace Nemutagk\BpBInsumos\Service;
 use Log;
 use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\{ClientException,RequestException};
+use GuzzleHttp\Exception\{ClientException,RequestException,ServerException};
 
 class HttpService
 {
@@ -20,11 +20,6 @@ class HttpService
 			$client = new Client($config);
 
 			$url = $this->url.$uri;
-			Log::info('HttpServiceConfig: ',[
-				'url' => $url
-				,'token' => $this->token
-				,'payload' => $payload
-			]);
 
 			if (!empty($payload) || !empty($requestConfig)) {
 				if (!empty($payload))
@@ -32,18 +27,25 @@ class HttpService
 						'json'=>$payload
 					]);
 
-				// Log::info('requestConfig', $requestConfig);
-
 				$response = $client->$method($url,$requestConfig);
 			}else
 				$response = $client->$method($url);
 
-			return ['success'=>true,'data'=>json_decode($response->getBody()->getContents(), true), 'rawResponse'=>$response];
+			if (!isset($config['isFile']) || !$config['isFile'])
+				return ['success'=>true,'data'=>json_decode($response->getBody()->getContents(), true), 'rawResponse'=>$response];
+			else
+				return ['success'=>true,'data'=>$response->getBody()->getContents(), 'rawResponse'=>$response];
 		}catch(ClientException $e) {
+			exception_error($e);
 			throw new HttpException($e->getMessage(), json_decode($e->getResponse()->getBody()->getContents(), true), $e->getResponse()->getStatusCode());
 		}catch(RequestException $e) {
+			exception_error($e);
+			throw new HttpException($e->getMessage(), json_decode($e->getResponse()->getBody()->getContents(), true), $e->getResponse()->getStatusCode());
+		}catch(ServerException $e) {
+			exception_error($e);
 			throw new HttpException($e->getMessage(), json_decode($e->getResponse()->getBody()->getContents(), true), $e->getResponse()->getStatusCode());
 		}catch(Exception $e) {
+			exception_error($e);
 			throw new HttpException($e->getMessage());
 		}
 	}
