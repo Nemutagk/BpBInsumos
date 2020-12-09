@@ -138,9 +138,9 @@ function str_rand($length=8, $alpha=true) {
 }
 
 function startProcess() {
-	return now();
+	return \Carbon\Carbon::now();
 }
 
 function endProcess(\Carbon\Carbon $start) {
-	return $start->diffInSeconds(now());
+	return $start->diffInSeconds(\Carbon\Carbon::now());
 }
