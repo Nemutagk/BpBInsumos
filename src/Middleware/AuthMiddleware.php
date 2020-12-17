@@ -32,8 +32,10 @@ class AuthMiddleware
 				return response()->json(['message'=>'Acceso no autorizado','error'=>$response['data']['error']], 401);
 			}
 
-			if ($response['data']['data'])
+			if ($response['data']['data']) {
 				AuthService::setAuth($response['data']['data']);
+				$request->attributes->add(['auth'=>$response['data']['data']]);
+			}
 
 			return $next($request);
 		}catch(HttpException $e) {

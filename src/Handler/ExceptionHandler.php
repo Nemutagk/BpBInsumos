@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\{HttpException,NotFoundHttpException,MethodNotAllowedHttpException};
 use Illuminate\Database\QueryException;
+use Nemutagk\BpBInsumos\Exception\HttpErrorException as BpBHttpErrorException;
 
 class ExceptionHandler
 {
@@ -15,10 +16,19 @@ class ExceptionHandler
 		$response = [
             'success'=>false
             ,'message' => $exception->getMessage()
-            ,'code' => str_rand(8, false)
         ];
 
-        $code = $exception instanceof NotFoundHttpException || $exception instanceof ModelNotFoundException || $exception instanceof NotFoundHttpException || $exception instanceof MethodNotAllowedHttpException ? 404 : 500;
+        if (!$exception instanceof BpBHttpErrorException)
+            $code = $exception instanceof NotFoundHttpException || $exception instanceof ModelNotFoundException || $exception instanceof NotFoundHttpException || $exception instanceof MethodNotAllowedHttpException ? 404 : 500;
+        else {
+            $code = $exception->getHttpCode();
+            $response['error'] = $exception->getError();
+
+            if (!empty($exception->getResponse()))
+                $response['response'] = $exception->getResponse();
+        }
+
+        $response['request_code'] = str_rand(8, false);
 
         if ($exception instanceof ValidationException) {
             $code = 400;
