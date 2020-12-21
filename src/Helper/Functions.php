@@ -144,3 +144,27 @@ function startProcess() {
 function endProcess(\Carbon\Carbon $start) {
 	return $start->diffInSeconds(\Carbon\Carbon::now());
 }
+
+function data_set_utf8($data) {
+	if (is_array($data)) {
+		foreach($data as $key => $value) {
+			if (is_string($value)) {
+				if (mb_detect_encoding($value, 'UTF-8', true)) {
+					$data[$key] = $value;
+				}else {
+					$data[$key] = utf8_encode($value);
+				}
+			}else {
+				$data[$key] = data_set_utf8($value);
+			}
+		}
+	}else {
+		$keys = array_keys(get_object_vars($data));
+
+		foreach($keys as $key) {
+			$data->$key = data_set_utf8($data->$key);
+		}
+	}
+
+	return $data;
+}
