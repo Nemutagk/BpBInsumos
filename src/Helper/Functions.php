@@ -164,7 +164,13 @@ function data_set_utf8($data) {
 		$keys = array_keys(get_object_vars($data));
 
 		foreach($keys as $key) {
-			$data->$key = data_set_utf8($data->$key);
+			if (is_string($data->$key)) {
+				if (!mb_detect_encoding($data->$key, 'UTF-8', true)) {
+					$data->$key = utf8_encode($data->$key);
+				}
+			}else if (is_array($data->$key) || is_object($data->$key)) {
+				$data->$key = data_set_utf8($data->$key);
+			}
 		}
 	}
 
