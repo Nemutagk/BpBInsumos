@@ -13,7 +13,7 @@ class EloquentHandler extends AbstractProcessingHandler
 		$json = json_encode($config, JSON_PRETTY_PRINT);
 		$arraySanitized = json_decode($json, true);
 
-		$config = $this->clear_keys($arraySanitized);
+		$config = $this->clear_keys($arraySanitized ?? []);
 
 		$config['hash'] = config('mlogger.hash','n/a');
 
