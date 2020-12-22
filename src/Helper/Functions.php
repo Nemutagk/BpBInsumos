@@ -154,8 +154,10 @@ function data_set_utf8($data) {
 				}else {
 					$data[$key] = utf8_encode($value);
 				}
-			}else {
+			}else if (is_array($value) || is_object($value)) {
 				$data[$key] = data_set_utf8($value);
+			}else {
+				$data[$key] = $value;
 			}
 		}
 	}else {
