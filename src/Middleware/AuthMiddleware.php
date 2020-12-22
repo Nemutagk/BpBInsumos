@@ -29,7 +29,7 @@ class AuthMiddleware
 
 			if (!$response['data']['success']) {
 				Log::error('Error al autenticar: ', $response['data']);
-				return response()->json(['message'=>'Acceso no autorizado','error'=>$response['data']['error']], 401);
+				return response()->json(['message'=>'Acceso no autorizado','message'=>($response['data']['message'] ?? null),'error'=>($response['data']['error'] ?? null)], 401);
 			}
 
 			if ($response['data']['data']) {
