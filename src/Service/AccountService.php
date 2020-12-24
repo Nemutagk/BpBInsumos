@@ -8,6 +8,11 @@ class AccountService extends HttpService
 
 	public function __construct() {
 		$this->token = env('ACCOUNT_API_TOKEN');
-		$this->url = env('ACCOUNT_API_URL');
+		$accountUrl = env('ACCOUNT_API_URL');
+
+		if (substr($accountUrl,strlen($accountUrl)-1, 1) != '/')
+			$accountUrl .= '/';
+
+		$this->url = $accountUrl;
 	}
 }
