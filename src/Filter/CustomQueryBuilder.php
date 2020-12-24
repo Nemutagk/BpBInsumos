@@ -47,16 +47,16 @@ class CustomQueryBuilder {
                     $isFirstValue = true;
                     foreach($filter['search'] as $search) {
                         if ($isFirstValue) {
-                            $query->where($column, 'like', '$'.$search.'%');
+                            $query->where($column, 'like', '%'.$search.'%');
                             $isFirstValue=false;
                         }else {
-                            $query->orWhere($column, 'like', '$'.$search.'%');
+                            $query->orWhere($column, 'like', '%'.$search.'%');
                         }
                     }
                     $isFirst=false;
                 }else {
                     foreach($filter['search'] as $search) {
-                        $query->orWhere($column, 'like', $search);
+                        $query->orWhere($column, 'like', '%'.$search.'%');
                     }
                 }
             }
