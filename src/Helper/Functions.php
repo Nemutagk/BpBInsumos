@@ -198,3 +198,10 @@ if (!function_exists('data_set_utf8')) {
 		return $data;
 	}
 }
+
+if (!function_exists('date_default_timezone_offset_get')) {
+	function date_default_timezone_offset_get() {
+	    $offset = timezone_offset_get(new \DateTimeZone(date_default_timezone_get()), new \DateTime());
+	    return sprintf("%s%02d:%02d", ($offset >= 0) ? '+' : '-', abs($offset / 3600), abs($offset % 3600));
+	}
+}
