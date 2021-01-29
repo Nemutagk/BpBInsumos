@@ -4,15 +4,17 @@ namespace Nemutagk\BpBInsumos\Middleware;
 use Log;
 use Closure;
 use Nemutagk\BpBInsumos\Logger;
+use Nemutagk\BpBInsumos\Models\Access;
 
 class RequestMiddleware
 {
 	public function handle($request, Closure $next) {
-		$headers = json_encode($request->header());
+		$headersJson = json_encode($request->header());
+		$headers = $request->header();
 
 		Logger::MakeRequestHash();
 
-		if (strpos($headers, 'ELB-HealthChecker') === false) {
+		if (strpos($headersJson, 'ELB-HealthChecker') === false) {
 			$requestAll = $request->all();
 
 			if (isset($requestAll['password']))
@@ -21,8 +23,8 @@ class RequestMiddleware
 			if (isset($requestAll['password_confirmation']))
 				$requestAll['password_confirmation'] = '*******';
 
-			if (isset($headers['authorization']))
-				$headers['authorization'] = substr($headers['authorization'], 0, 10).'...';
+			// if (isset($headers['authorization']))
+			// 	$headers['authorization'][0] = substr($headers['authorization'][0], 0, 20).'...';
 
 			$accessRequest = [
 	            'path' => $request->fullUrl()
@@ -33,6 +35,13 @@ class RequestMiddleware
 	        ];
 
 	        Log::info('RequestAccessInfo: ', $accessRequest);
+	        $access = new Access();
+
+	        foreach($accessRequest as $key => $value) {
+	        	$access->$key = $value;
+	        }
+
+	        $access->save();
 
 	        if (strpos($request->fullUrl(), 'bienparabien') === false && strpos($request->fullUrl(), 'bpb') === false)
 				return response()->json(['message'=>'Acceso no autorizado'], 401);
