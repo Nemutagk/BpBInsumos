@@ -167,6 +167,10 @@ if (!function_exists('endProcess')) {
 
 if (!function_exists('data_set_utf8')) {
 	function data_set_utf8($data) {
+		if (is_object($data))
+			if (method_exists($data, 'toArray'))
+				$data = $data->toArray();
+
 		if (is_array($data)) {
 			foreach($data as $key => $value) {
 				if (is_string($value)) {
