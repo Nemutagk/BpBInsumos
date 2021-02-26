@@ -181,7 +181,7 @@ if (!function_exists('data_set_utf8')) {
 					$data[$key] = $value;
 				}
 			}
-		}else {
+		}else if (is_object($data)) {
 			$keys = array_keys(get_object_vars($data));
 
 			foreach($keys as $key) {
@@ -193,6 +193,9 @@ if (!function_exists('data_set_utf8')) {
 					$data->$key = data_set_utf8($data->$key);
 				}
 			}
+		}else if (is_string($data) || is_numeric($data)) {
+			if (!mb_detect_encoding($data, 'UTF-8', true))
+				$data = utf8_encode($data);
 		}
 
 		return $data;
