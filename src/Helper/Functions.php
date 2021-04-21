@@ -212,3 +212,16 @@ if (!function_exists('date_default_timezone_offset_get')) {
 	    return sprintf("%s%02d:%02d", ($offset >= 0) ? '+' : '-', abs($offset / 3600), abs($offset % 3600));
 	}
 }
+
+if (!function_exists('normalizar_str')) {
+	function normalizar_str($text) {
+		$buscar = ['Á','É','í','Ó','Ú','Ñ','Ü','á','é','í','ó','ú','ñ','ü',' '];
+		$reemplazar = ['A','E','I','O','U','N','U','a','e','i','o','u','n','u','_'];
+
+		$text = str_replace($buscar, $reemplazar, $text);
+
+		$text = strtolower($text);
+
+		return $text;
+	}
+}
