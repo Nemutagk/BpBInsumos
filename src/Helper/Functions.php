@@ -167,10 +167,6 @@ if (!function_exists('endProcess')) {
 
 if (!function_exists('data_set_utf8')) {
 	function data_set_utf8($data) {
-		if (is_object($data))
-			if (method_exists($data, 'toArray'))
-				$data = $data->toArray();
-
 		if (is_array($data)) {
 			foreach($data as $key => $value) {
 				if (is_string($value)) {
@@ -185,21 +181,28 @@ if (!function_exists('data_set_utf8')) {
 					$data[$key] = $value;
 				}
 			}
-		}else if (is_object($data)) {
-			$keys = array_keys(get_object_vars($data));
+		}else if(is_object($data)) {
+			if (method_exists($data, 'toArray')) {
+				$data = data_set_utf8($data->toArray());
+			}else {
+				$keys = array_keys(get_object_vars($data));
 
-			foreach($keys as $key) {
-				if (is_string($data->$key)) {
-					if (!mb_detect_encoding($data->$key, 'UTF-8', true)) {
-						$data->$key = utf8_encode($data->$key);
+				foreach($keys as $key) {
+					if (is_string($data->$key)) {
+						if (!mb_detect_encoding($data->$key, 'UTF-8', true)) {
+							$data->$key = utf8_encode($data->$key);
+						}
+					}else if (is_array($data->$key) || is_object($data->$key)) {
+						$data->$key = data_set_utf8($data->$key);
 					}
-				}else if (is_array($data->$key) || is_object($data->$key)) {
-					$data->$key = data_set_utf8($data->$key);
 				}
 			}
-		}else if (is_string($data) || is_numeric($data)) {
-			if (!mb_detect_encoding($data, 'UTF-8', true))
+		}else {
+			if (mb_detect_encoding($data, 'UTF-8', true)) {
+				$data = $data;
+			}else {
 				$data = utf8_encode($data);
+			}
 		}
 
 		return $data;
