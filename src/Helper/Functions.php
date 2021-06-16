@@ -233,7 +233,7 @@ if (!function_exists('check_size_str_from_array')) {
 	function check_size_str_from_array($array) {
 		foreach($array as $key => $value) {
 			if (is_string($value)) {
-				if (strlen($value) >= 16777216) {
+				if (strlen($value) >= 4194304) {
 					$array[$key] = 'Valor muy pesado: '.strlen($value).' size';
 				}else {
 					$array[$key] = $value;
