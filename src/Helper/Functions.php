@@ -228,3 +228,23 @@ if (!function_exists('normalizar_str')) {
 		return $text;
 	}
 }
+
+if (!function_exists('check_size_str_from_array')) {
+	function check_size_str_from_array($array) {
+		foreach($array as $key => $value) {
+			if (is_string($value)) {
+				if (strlen($value) >= 16777216) {
+					$array[$key] = 'Valor muy largo: '.substr($value, 16770216).'...';
+				}else {
+					$array[$key] = $value;
+				}
+			}else if (is_array($value)) {
+				$array[$key] = check_size_str_from_array($value);
+			}else {
+				$array[$key] = $value;
+			}
+		}
+
+		return $array;
+	}
+}
