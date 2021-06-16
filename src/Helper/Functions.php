@@ -234,7 +234,7 @@ if (!function_exists('check_size_str_from_array')) {
 		foreach($array as $key => $value) {
 			if (is_string($value)) {
 				if (strlen($value) >= 16777216) {
-					$array[$key] = 'Valor muy largo: '.substr($value, 16000216).'...';
+					$array[$key] = 'Valor muy pesado: '.strlen($value).' size';
 				}else {
 					$array[$key] = $value;
 				}
