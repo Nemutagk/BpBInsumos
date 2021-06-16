@@ -23,8 +23,10 @@ class RequestMiddleware
 			if (isset($requestAll['password_confirmation']))
 				$requestAll['password_confirmation'] = '*******';
 
-			// if (isset($headers['authorization']))
-			// 	$headers['authorization'][0] = substr($headers['authorization'][0], 0, 20).'...';
+			$json = json_encode($requestAll);
+
+			if (strlen($json) > 16777216)
+				$requestAll = 'Request muy largo: '.substr($json, 0, 16775216);
 
 			$accessRequest = [
 	            'path' => $request->fullUrl()
