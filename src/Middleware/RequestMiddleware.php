@@ -43,7 +43,7 @@ class RequestMiddleware
 	        $access->save();
 
 	        if (strpos($request->fullUrl(), 'bienparabien') === false && strpos($request->fullUrl(), 'bpb') === false)
-				return response()->json(['message'=>'Acceso no autorizado'], 401);
+				return response(null, 403);
 		}
 
 		return $next($request);
